@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   mariadb:
     image: mariadb:latest
     container_name: automated_database
@@ -14,3 +15,14 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3307:3306"
+
+  flask:
+    build: ./app_python
+    container_name: flask_server
+    environment:
+      FLASK_APP: 'app.py'
+      FLASK_ENV: 'development'
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mariadb
