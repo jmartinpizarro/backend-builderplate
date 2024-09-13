@@ -4,6 +4,8 @@ import datetime
 
 app = Flask(__name__)
 
+DATABASE_NAME = "TODOTHINGS"
+
 def get_db_connection():
     connection = mysql.connector.connect(
         host="mariadb",
@@ -44,10 +46,27 @@ def insert_task():
     due_date = datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date()
     
     # Insertar los datos en la base de datos
-    query = "INSERT INTO TODOTHINGS (task, due_to_date) VALUES (%s, %s)"
+    query = f"INSERT INTO {DATABASE_NAME} (task, due_to_date) VALUES (%s, %s)"
     cursor.execute(query, (task_name, due_date))
     connection.commit()
     
-    response = make_response(jsonify({"message": "Task inserted successfully!"}), 201)
+    response = make_response(jsonify({"message": "Task inserted successfully!"}), 200)
     return response
+
+@app.route('/delete-task', methods=['DELETE'])
+def remove_task():
+    connection = get_db_connection()
+    cursor = connection.cursor()
     
+    data = request.get_json()  # data will be a dictionary containing the id
+    task_id_to_remove = data.get('id')
+    
+    if not isinstance(task_id_to_remove, int):
+        task_id_to_remove = int(task_id_to_remove)  # Convert to integer if needed
+    
+    query = f"DELETE FROM {DATABASE_NAME} WHERE id = %s"  # Safe from SQL Injection
+    cursor.execute(query, (task_id_to_remove,))  # Pass as a tuple
+    connection.commit()
+    
+    response = make_response(jsonify({"message": "Task was deleted successfully!"}), 200)
+    return response
