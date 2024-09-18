@@ -4,7 +4,7 @@ services:
 
   mariadb:
     image: mariadb:latest
-    container_name: automated_database
+    container_name: messenger_backend
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: toDoList_db
@@ -17,8 +17,8 @@ services:
       - "3307:3306"
 
   flask:
-    build: ./app_python
-    container_name: flask_server
+    build: ./backend
+    container_name: flask_app
     environment:
       FLASK_APP: 'app.py'
       FLASK_ENV: 'development'
