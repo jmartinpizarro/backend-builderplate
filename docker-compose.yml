@@ -4,12 +4,12 @@ services:
 
   mariadb:
     image: mariadb:latest
-    container_name: automated_database
+    container_name: backend_builderplate
     environment:
       MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: toDoList_db
-      MYSQL_USER: dummy@localhost.com
-      MYSQL_PASSWORD: dummy_password
+      MYSQL_DATABASE: backend_db
+      MYSQL_USER: admin@localhost.com
+      MYSQL_PASSWORD: 1234
     volumes:
       - ./db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -17,7 +17,7 @@ services:
       - "3307:3306"
 
   flask:
-    build: ./app_python
+    build: ./backend
     container_name: flask_server
     environment:
       FLASK_APP: 'app.py'
