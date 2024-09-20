@@ -1,72 +1,95 @@
 from flask import Flask, request, jsonify, make_response
 import mysql.connector
-import datetime
+import logging
 
 app = Flask(__name__)
 
-DATABASE_NAME = "TODOTHINGS"
+DATABASE_NAME = "backend_db"
 
 def get_db_connection():
     connection = mysql.connector.connect(
         host="mariadb",
-        user="dummy@localhost.com",
-        password="dummy_password",
-        database="toDoList_db",
+        user="admin@localhost.com",
+        password="1234",
+        database=DATABASE_NAME,
         charset='utf8mb4',
         collation='utf8mb4_general_ci'
     )
     return connection
 
-@app.route('/tasks', methods=['GET'])
-def get_tasks():
-    connection = get_db_connection()
-    cursor = connection.cursor()
+@app.route('/get-users', methods=['GET'])
+def get_users():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        query = "SELECT * FROM users"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        
+    except mysql.connector.Error as e:
+        logging.error(f"MySQL error: {e}")
+        response = make_response(jsonify({'response': 'Users could not be obtained'}), 400)
+        return response
     
-    cursor.execute('SELECT * FROM TODOTHINGS;')
+    except Exception as e:
+        logging.exception(f"Exception: {e}")
+        response = make_response(jsonify({'response': 'Users could not be obtained'}), 400)
+        return response
     
-    rows = cursor.fetchall()
-    print(rows)
-    
-    cursor.close()
-    connection.close()
-    
-    response = make_response(jsonify({"message": rows}), 200)
+    response = make_response(jsonify({"response": rows}), 201)
     return response
 
-@app.route('/insert-task', methods=['POST'])
-def insert_task():
-    connection = get_db_connection()
-    cursor = connection.cursor() # used for querying 
- 
-    data = request.get_json()
-    task_name = data.get('task_name')
-    due_date_str = data.get('due_date')
+@app.route('/insert-user', methods=['POST'])
+def insert_user():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        data = request.get_json()
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        
+        query = f"INSERT INTO {DATABASE_NAME}.users VALUES (%s, %s, %s)"
+        cursor.execute(query, (username, email, password))
+        connection.commit()
+        
+    except mysql.connector.Error as e:
+        logging.error(f"MySQL error: {e}")
+        response = make_response(jsonify({'response': 'Users could not be inserted'}), 400)
+        return response
     
-    # Convertir la cadena de fecha a un objeto de tipo Date
-    due_date = datetime.datetime.strptime(due_date_str, '%Y-%m-%d').date()
+    except Exception as e:
+        logging.exception(f"Exception: {e}")
+        response = make_response(jsonify({'response': 'Users could not be inserted'}), 400)
+        return response
     
-    # Insertar los datos en la base de datos
-    query = f"INSERT INTO {DATABASE_NAME} (task, due_to_date) VALUES (%s, %s)"
-    cursor.execute(query, (task_name, due_date))
-    connection.commit()
-    
-    response = make_response(jsonify({"message": "Task inserted successfully!"}), 200)
+    response = make_response(jsonify({"response": "User inserted successfully!"}), 201)
     return response
 
-@app.route('/delete-task', methods=['DELETE'])
-def remove_task():
-    connection = get_db_connection()
-    cursor = connection.cursor()
+@app.route('/delete-user', methods=['DELETE'])
+def delete_user():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        data = request.get_json()
+        user_to_remove = data.get('user')
+        
+        query = f"DELETE FROM users WHERE users.username = (%s)"
+        cursor.execute(query, (user_to_remove,))
+        connection.commit()
+        
+    except mysql.connector.Error as e:
+        logging.error(f"MySQL error: {e}")
+        response = make_response(jsonify({'response': 'Users could not be deleted'}), 400)
+        return response
     
-    data = request.get_json()  # data will be a dictionary containing the id
-    task_id_to_remove = data.get('id')
+    except Exception as e:
+        logging.exception(f"Exception: {e}")
+        response = make_response(jsonify({'response': 'Users could not be deleted'}), 400)
+        return response
     
-    if not isinstance(task_id_to_remove, int):
-        task_id_to_remove = int(task_id_to_remove)  # Convert to integer if needed
-    
-    query = f"DELETE FROM {DATABASE_NAME} WHERE id = %s"  # Safe from SQL Injection
-    cursor.execute(query, (task_id_to_remove,))  # Pass as a tuple
-    connection.commit()
-    
-    response = make_response(jsonify({"message": "Task was deleted successfully!"}), 200)
+    response = make_response(jsonify({'response': 'User was successfully deleted!'}, 200))
     return response
