@@ -1,21 +1,20 @@
 # Backend Builderplate
 
-Tired of generating a new backend constinously for your projects? This repo provides a backend builderplate, the skeleton, for deploying your database and basic API routes locally. For the database, we are using *MariaDB*, but feel free to implement your favorite one. The API is created using Flask and the entire project is locally deployed using Docker.
+Tired of generating a new backend constinously for your projects? This repo provides a backend builderplate, the skeleton, for deploying your database and basic API routes locally. For the database, we are using *MariaDB*, but feel free to implement your favorite one. 
 
-
-For the database, it would be locally using MariaDB and Dockerfile. 
+The API is created using Flask and the entire project is locally deployed using Docker. For the database, it would be locally deployed using MariaDB and Dockerfile. 
 
 # The docker-compose.yml file
 
-For the moment, it just deploys a local database (need to improve this description).
+For the moment, it just deploys a local MariaDB database and the backend API in charge of interacting with the database.
 
 # The init.sql file
 
-It generates a new database with the table that the frontend will use to obtain all the information needed. 
+It generates a new database with the `users` table that the frontend will use to obtain all the information needed. If you want to create more tables when generating the database, just add the necessary code in this file.
 
 # How to deploy the project locally.
 
-As all the backend would be on a docker container, it is not necessary to install anything more than Docker (for the moment). Execute the these commands in the following order
+As all the backend would be on a docker container, it is not necessary to install anything more than Docker. Execute the following commands in the correspondant order.
 
 ```bash
 docker-compose build && docker-compose up
@@ -41,7 +40,19 @@ Voilà. You are inside the database. Use the command:
 use backend_db;
 ```
 
-for start using the database you have just deployed. Enjoy when using this builderplate and feel free to contribute to this opensource project
+for start using the database you have just deployed. If you want to check that everything is working correctly, you can execute:
+
+```bash
+curl http://localhost:5000/get-users
+```
+
+where you should get the following output:
+
+
+```bash
+{"response":[["admin","admin@localhost.com","1234"]]}
+```
+ Enjoy when using this builderplate and feel free to contribute to this opensource project
 
 # Contributing
-Wanna do something for the community? Here you can do it! When contributing to this project, first raise an issue describing what you think could be improved (SQL, Docker, bugs, features...). If the issues passes the check, feel free to develop in a new branch and doing some PRs!
+Wanna do something for the community? Here you can do it! When contributing to this project, first raise an issue describing what you think could be improved (SQL, Docker, bugs, features...). If the issue passes the check, feel free to develop in a new branch and doing some PRs!
