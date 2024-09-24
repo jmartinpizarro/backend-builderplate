@@ -52,7 +52,7 @@ where you should get the following output:
 ```bash
 {"response":[["admin","admin@localhost.com","1234"]]}
 ```
- Enjoy when using this builderplate and feel free to contribute to this opensource project
+ Enjoy when using this builderplate and feel free to contribute to this opensource project.
 
 # Contributing
 Wanna do something for the community? Here you can do it! When contributing to this project, first raise an issue describing what you think could be improved (SQL, Docker, bugs, features...). If the issue passes the check, feel free to develop in a new branch and doing some PRs!
