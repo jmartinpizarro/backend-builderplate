@@ -22,21 +22,21 @@ def get_users():
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        
+
         query = "SELECT * FROM users"
         cursor.execute(query)
         rows = cursor.fetchall()
-        
+
     except mysql.connector.Error as e:
         logging.error(f"MySQL error: {e}")
         response = make_response(jsonify({'response': 'Users could not be obtained'}), 400)
         return response
-    
+
     except Exception as e:
         logging.exception(f"Exception: {e}")
         response = make_response(jsonify({'response': 'Users could not be obtained'}), 400)
         return response
-    
+
     response = make_response(jsonify({"response": rows}), 201)
     return response
 
@@ -45,26 +45,26 @@ def insert_user():
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        
+
         data = request.get_json()
         username = data.get('username')
         email = data.get('email')
         password = data.get('password')
-        
+
         query = f"INSERT INTO {DATABASE_NAME}.users VALUES (%s, %s, %s)"
         cursor.execute(query, (username, email, password))
         connection.commit()
-        
+
     except mysql.connector.Error as e:
         logging.error(f"MySQL error: {e}")
         response = make_response(jsonify({'response': 'Users could not be inserted'}), 400)
         return response
-    
+
     except Exception as e:
         logging.exception(f"Exception: {e}")
         response = make_response(jsonify({'response': 'Users could not be inserted'}), 400)
         return response
-    
+
     response = make_response(jsonify({"response": "User inserted successfully!"}), 201)
     return response
 
@@ -73,23 +73,27 @@ def delete_user():
     try:
         connection = get_db_connection()
         cursor = connection.cursor()
-        
+
         data = request.get_json()
         user_to_remove = data.get('user')
-        
+
+        # Additional error handling to prevent deletion using integer or boolean
+        if isinstance(user_to_remove, int) or isinstance(user_to_remove, bool):
+            return make_response(jsonify({'response': 'Invalid user format'}), 400)
+
         query = f"DELETE FROM users WHERE users.username = (%s)"
         cursor.execute(query, (user_to_remove,))
         connection.commit()
-        
+
     except mysql.connector.Error as e:
         logging.error(f"MySQL error: {e}")
         response = make_response(jsonify({'response': 'Users could not be deleted'}), 400)
         return response
-    
+
     except Exception as e:
         logging.exception(f"Exception: {e}")
         response = make_response(jsonify({'response': 'Users could not be deleted'}), 400)
         return response
-    
-    response = make_response(jsonify({'response': 'User was successfully deleted!'}, 200))
+
+    response = make_response(jsonify({'response': 'User was successfully deleted!'}), 200)
     return response
