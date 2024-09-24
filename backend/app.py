@@ -82,6 +82,10 @@ def delete_user():
         data = request.get_json()
         user_to_remove = data.get('user')
 
+        # Additional error handling to prevent deletion using integer or boolean
+        if isinstance(user_to_remove, int) or isinstance(user_to_remove, bool):
+            return make_response(jsonify({'response': 'Invalid user format'}), 400)
+
         query = f"DELETE FROM users WHERE users.username = (%s)"
         cursor.execute(query, (user_to_remove,))
         connection.commit()
@@ -97,4 +101,5 @@ def delete_user():
         return response
 
     response = make_response(jsonify({'response': 'User was successfully deleted!'}, 200))
+
     return response
