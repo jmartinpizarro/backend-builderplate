@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, make_response
+from flask_bcrypt import Bcrypt
 import mysql.connector
 import logging
 
 app = Flask(__name__)
+app_bcrypt = Bcrypt(app)
 
 DATABASE_NAME = "backend_db"
 
@@ -16,6 +18,7 @@ def get_db_connection():
         collation='utf8mb4_general_ci'
     )
     return connection
+
 
 @app.route('/get-users', methods=['GET'])
 def get_users():
@@ -49,7 +52,9 @@ def insert_user():
         data = request.get_json()
         username = data.get('username')
         email = data.get('email')
-        password = data.get('password')
+        password = app_bcrypt.generate_password_hash(
+            data.get('password')
+        ).decode('utf-8')
 
         query = f"INSERT INTO {DATABASE_NAME}.users VALUES (%s, %s, %s)"
         cursor.execute(query, (username, email, password))
@@ -95,5 +100,6 @@ def delete_user():
         response = make_response(jsonify({'response': 'Users could not be deleted'}), 400)
         return response
 
-    response = make_response(jsonify({'response': 'User was successfully deleted!'}), 200)
+    response = make_response(jsonify({'response': 'User was successfully deleted!'}, 200))
+
     return response
