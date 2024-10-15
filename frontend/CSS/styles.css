@@ -1,0 +1,87 @@
+
+
+
+:root {
+    --pale-white: #f2f2f2;
+    --red: #ff0000;
+    --green-hacker: #009000;
+    --black: #000000;
+    --blue: #0000ff;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    text-align: center;
+}
+
+#document, #user {
+    margin: 10px;
+}
+
+.type1.button {
+    margin-top: 20px;
+}
+
+.authenticator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.login {
+    color: var(--red);
+    background-color: var(--pale-white);
+}
+
+.type1 {
+    color: var(--pale-white);
+    background-color: var(--red);
+}
+
+.type2 {
+    color: var(--pale-white);
+    background-color: var(--blue);
+}
+.Titulo{
+    color: var(--green-hacker);
+    background-color: var(--black);
+
+}
+
+.container_row {
+    display: flex;
+    flex-direction: row; /* Cambia a 'row' para una distribución horizontal */
+    justify-content: space-between; /* Distribuye el espacio de manera uniforme entre los elementos */
+    align-items: center; /* Centra los elementos a lo largo del eje transversal */
+    gap: 20px; /* Espacio entre los elementos */
+}
+
+.container_column {
+    display: flex;
+    flex-direction: column; /* Cambia a 'row' para una distribución horizontal */
+    justify-content: space-between; /* Distribuye el espacio de manera uniforme entre los elementos */
+    align-items: center; /* Centra los elementos a lo largo del eje transversal */
+    gap: 20px; /* Espacio entre los elementos */
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    max-width: 12rem;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.button:hover {
+    transform: scale(1.05);
+}

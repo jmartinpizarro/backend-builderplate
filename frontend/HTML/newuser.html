@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro</title>
+    <link rel="stylesheet" href="../CSS/styles.css" />
+
 </head>
 <body>
+<div class="authenticator">
+    <label for="user_r">Usuario</label>
+    <input type="text" id ="user_r" name="user" required>
+    <label for="password_r">Contraseña</label>
+    <input type="password" id ="password_r" name="password" required>
+    <label for="password_rr">Repetir Contraseña</label>
+    <input type="text" id ="password_rr" name="password" required>
+    <button class="type1 button" id="register" onclick="window.open('challenges.html')">Registrarse</button>
+</div>
 
 </body>
 </html>
